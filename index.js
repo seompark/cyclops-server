@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const got = require('got')
 const Hapi = require('hapi')
+const sharp = require('sharp')
 
 const server = Hapi.server({
   port: process.env.PORT
@@ -30,7 +31,7 @@ server.route({
 
       const cognitives = await got.post(process.env.VISION_HOST, {
         query,
-        body: file,
+        body: file.pipe(sharp().resize(200)),
         headers: {
           'Content-Type': 'application/octet-stream',
           'Ocp-Apim-Subscription-Key': process.env.VISION_KEY

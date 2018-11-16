@@ -1,4 +1,4 @@
-FROM node:10
+FROM tailor/docker-libvips:node-10.9
 
 ENV APP=/app/cyclops
 RUN mkdir -p $APP
