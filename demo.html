@@ -11,10 +11,6 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
   <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
   <style>
-    body, button, input, select, textarea {
-      font-family: 'Spoqa Han Sans', BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","DroidSans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    }
-
     .wrapper {
       text-align: center;
       padding: 2rem;
@@ -111,7 +107,7 @@
       formData.append('image', file)
       axios.post('/', formData, {
         onUploadProgress(event) {
-          $progress.innerHTML = (event.loaded * 100 / event.total).toFixed(2) + '%'
+          $progress.innerHTML = (event.loaded * 100 / event.total).toFixed(1) + '%'
         },
       }).then(v => {
         console.log(v.data)
