@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Cyclops Demo</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.18.0/axios.min.js"></script>
+  <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
+  <style>
+    body, button, input, select, textarea {
+      font-family: 'Spoqa Han Sans', BlinkMacSystemFont,-apple-system,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","DroidSans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    }
+
+    .wrapper {
+      text-align: center;
+      padding: 2rem;
+    }
+    .c-form {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .c-image {
+      height: 400px;
+      margin-bottom: 1rem;
+    }
+    .c-contents {
+      margin-bottom: 1rem;
+    }
+
+    #words.is-loading {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      vertical-align: top;
+      position: relative;
+      text-align: center;
+      color: transparent !important;
+    }
+
+    #words.is-loading::after {
+      position: absolute !important;
+      -webkit-animation: spinAround .5s infinite linear;
+      animation: spinAround .5s infinite linear;
+      border: 2px solid #dbdbdb;
+      border-radius: 290486px;
+      border-right-color: transparent;
+      border-top-color: transparent;
+      content: "";
+      display: block;
+      height: 1em;
+      position: relative;
+      width: 1em;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <h1 class="title is-1">Cyclops Web Demo</h1>
+    <div class="c-form">
+      <img class="c-image" src="https://images.unsplash.com/photo-1542329344097-3f0d2be8b5e8?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=eabf3b5c24d92351cccff96954533083&auto=format&fit=crop&w=611&q=80">
+      <div class="c-contents">
+        <div class="box">
+          <p id="words" class="is-size-2">사진기, 남성</p>
+        </div>
+      </div>
+      <div class="file has-name">
+        <label class="file-label">
+          <input class="file-input" type="file" name="image">
+          <span class="file-cta">
+            <span class="file-icon">
+              <i class="fas fa-upload"></i>
+            </span>
+            <span class="file-label">
+              Choose a file…
+            </span>
+          </span>
+          <span id="upload-progress" class="file-name">
+
+          </span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const $ = document.querySelector.bind(document)
+    const $fileInput = $('input[name=image]')
+    const $progress = $('#upload-progress')
+    const $words = $('#words')
+    const $image = $('.c-image')
+
+    $fileInput.addEventListener('change', e => {
+      const file = e.target.files[0]
+      if (!file) return
+
+      const reader = new FileReader()
+      reader.onload = e => {
+        $image.src = e.target.result
+      }
+      reader.readAsDataURL(file)
+
+      $words.classList.add('is-loading')
+      const formData = new FormData()
+      formData.append('image', file)
+      axios.post('/', formData, {
+        onUploadProgress(event) {
+          $progress.innerHTML = (event.loaded * 100 / event.total) + '%'
+        },
+      }).then(v => {
+        console.log(v.data)
+        $words.innerHTML = v.data
+        $words.classList.remove('is-loading')
+        responsiveVoice.speak(v.data, 'Korean Female')
+      }).catch(console.error)
+    })
+  </script>
+</body>
+
+</html>

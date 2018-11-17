@@ -22,6 +22,7 @@ server.route({
     try {
       const data = request.payload
       const file = Object.values(data)[0]
+      if (!file) return
 
       const query = {
         'visualFeatures': 'Tags',
@@ -64,7 +65,16 @@ server.route({
   }
 })
 
+server.route({
+  method: 'GET',
+  path: '/demo',
+  handler (res, h) {
+    return h.file('./demo.html')
+  }
+})
+
 const init = async () => {
+  await server.register(require('inert'));
   await server.start()
   console.log(`Server running at: ${server.info.uri}`)
 }
