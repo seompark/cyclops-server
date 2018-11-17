@@ -111,7 +111,7 @@
       formData.append('image', file)
       axios.post('/', formData, {
         onUploadProgress(event) {
-          $progress.innerHTML = (event.loaded * 100 / event.total) + '%'
+          $progress.innerHTML = (event.loaded * 100 / event.total).toFixed(2) + '%'
         },
       }).then(v => {
         console.log(v.data)
